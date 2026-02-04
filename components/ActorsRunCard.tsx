@@ -212,7 +212,7 @@ function DotGrid({ dotStates, staggerAnimation }: { dotStates: Map<string, DotSt
             animate={{ opacity: 1 }}
             transition={{
               duration: 0.3,
-              delay: staggerAnimation ? column * 0.03 : 0,
+              delay: staggerAnimation ? column * 0.06 : 0,
               ease: "easeOut",
             }}
           >
