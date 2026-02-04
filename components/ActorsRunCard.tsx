@@ -211,9 +211,8 @@ function DotGrid({ dotStates, staggerAnimation }: { dotStates: Map<string, DotSt
             initial={staggerAnimation ? { opacity: 0 } : { opacity: 1 }}
             animate={{ opacity: 1 }}
             transition={{
-              duration: 0.3,
+              duration: 0,
               delay: staggerAnimation ? column * 0.06 : 0,
-              ease: "easeOut",
             }}
           >
             {Array.from({ length: GRID_ROWS }).map((_, row) => {
