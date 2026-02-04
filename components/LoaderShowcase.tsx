@@ -923,6 +923,7 @@ const hourglass = [
 export function LoaderShowcase() {
   const [speed, setSpeed] = useState(400);
   const [cardAnimated, setCardAnimated] = useState(false);
+  const [cardStagger, setCardStagger] = useState(false);
   const [actorsRunData, setActorsRunData] = useState(() => ({
     amount: 67.67,
     range: "Jan 24 - Feb 24",
@@ -945,6 +946,7 @@ export function LoaderShowcase() {
               usageTrend={actorsRunData.trend}
               animated={cardAnimated}
               animationSpeed={200}
+              staggerAnimation={cardStagger}
             />
             <button
               type="button"
@@ -959,6 +961,13 @@ export function LoaderShowcase() {
               className="h-9 rounded-md border border-gray-200 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
             >
               {cardAnimated ? "Disable" : "Enable"} animation
+            </button>
+            <button
+              type="button"
+              onClick={() => setCardStagger(!cardStagger)}
+              className="h-9 rounded-md border border-gray-200 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+            >
+              {cardStagger ? "Disable" : "Enable"} stagger
             </button>
           </div>
         </div>

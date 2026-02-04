@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import type { DotState } from "@/utils/halftone";
 import { DOT_FULL_SIZE, DOT_SPACING, LoaderDot } from "./LoaderDot";
 
@@ -26,6 +27,7 @@ interface ActorsRunCardProps {
   usageTrend?: number;
   animated?: boolean;
   animationSpeed?: number; // ms per step
+  staggerAnimation?: boolean; // Enable column-by-column fade in
 }
 
 // Generate spike pattern - quick jumps simulating usage activity
@@ -133,6 +135,7 @@ export function ActorsRunCard({
   usageTrend = 0,
   animated = false,
   animationSpeed = 200,
+  staggerAnimation = false,
 }: ActorsRunCardProps) {
   const [currentAmount, setCurrentAmount] = useState(animated ? 0 : usageAmount);
   const [currentLevel, setCurrentLevel] = useState(animated ? 0 : usageLevel);
@@ -182,31 +185,44 @@ export function ActorsRunCard({
           ${currentAmount.toFixed(2)}
         </p>
         <div className="absolute right-3 top-[10px]">
-          <DotGrid dotStates={dotStates} />
+          <DotGrid dotStates={dotStates} staggerAnimation={staggerAnimation} />
         </div>
       </div>
     </div>
   );
 }
 
-function DotGrid({ dotStates }: { dotStates: Map<string, DotState> }) {
+function DotGrid({ dotStates, staggerAnimation }: { dotStates: Map<string, DotState>; staggerAnimation: boolean }) {
   return (
     <div className="overflow-hidden">
       <div
-        className="grid"
+        className="flex"
         style={{
-          gridTemplateColumns: `repeat(${GRID_COLUMNS}, auto)`,
-          gridTemplateRows: `repeat(${GRID_ROWS}, auto)`,
           gap: `${DOT_SPACING}px`,
         }}
       >
-        {Array.from({ length: GRID_ROWS }).map((_, row) =>
-          Array.from({ length: GRID_COLUMNS }).map((_, column) => {
-            const key = `${column},${row}`;
-            const state = dotStates.get(key) ?? "empty";
-            return <LoaderDot key={key} state={state} palette={dotPalette} />;
-          })
-        )}
+        {Array.from({ length: GRID_COLUMNS }).map((_, column) => (
+          <motion.div
+            key={column}
+            className="flex flex-col"
+            style={{
+              gap: `${DOT_SPACING}px`,
+            }}
+            initial={staggerAnimation ? { opacity: 0 } : { opacity: 1 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              duration: 0.3,
+              delay: staggerAnimation ? column * 0.03 : 0,
+              ease: "easeOut",
+            }}
+          >
+            {Array.from({ length: GRID_ROWS }).map((_, row) => {
+              const key = `${column},${row}`;
+              const state = dotStates.get(key) ?? "empty";
+              return <LoaderDot key={key} state={state} palette={dotPalette} />;
+            })}
+          </motion.div>
+        ))}
       </div>
     </div>
   );
