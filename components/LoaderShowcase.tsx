@@ -51,6 +51,30 @@ function createMockActorsRunData() {
   return { amount, range, level, trend };
 }
 
+function createMockComputeUnitsData() {
+  const amount = Math.round(Math.random() * 9000) / 1000000; // 0 to 0.009
+  const range = ACTORS_RUN_RANGES[Math.floor(Math.random() * ACTORS_RUN_RANGES.length)];
+  const level = amount / 0.009; // Normalize to 0-1
+  let trend = Math.random() * 2 - 1;
+  if (level < 0.35) {
+    trend -= (0.35 - level) * 1.5;
+  }
+  trend = Math.max(-1, Math.min(1, trend));
+  return { amount, range, level, trend };
+}
+
+function createMockStorageData() {
+  const amount = Math.round(Math.random() * 5000); // 0 to 5000 MB (0-5 GB)
+  const range = ACTORS_RUN_RANGES[Math.floor(Math.random() * ACTORS_RUN_RANGES.length)];
+  const level = Math.min(1, Math.max(0, amount / 5000));
+  let trend = Math.random() * 2 - 1;
+  if (level < 0.35) {
+    trend -= (0.35 - level) * 1.5;
+  }
+  trend = Math.max(-1, Math.min(1, trend));
+  return { amount, range, level, trend };
+}
+
 const Loader = memo(function Loader({ shape, title, animated = false, animationPath, speed = 400, customStates, halftone }: LoaderProps) {
   const [grid, setGrid] = useState<GridDot[][]>(
     Array(GRID_SIZE)
@@ -928,23 +952,13 @@ export function LoaderShowcase() {
     level: 0.56,
     trend: 0,
   }));
-  const [card2Data, setCard2Data] = useState(() => ({
-    amount: 1234.56,
-    range: "Jan 24 - Feb 24",
-    level: 0.72,
-    trend: 0.3,
-  }));
-  const [card3Data, setCard3Data] = useState(() => ({
-    amount: 89.23,
-    range: "Jan 24 - Feb 24",
-    level: 0.41,
-    trend: -0.2,
-  }));
+  const [card2Data, setCard2Data] = useState(() => createMockComputeUnitsData());
+  const [card3Data, setCard3Data] = useState(() => createMockStorageData());
 
   const handleRandomizeAll = () => {
     setCard1Data(createMockActorsRunData());
-    setCard2Data(createMockActorsRunData());
-    setCard3Data(createMockActorsRunData());
+    setCard2Data(createMockComputeUnitsData());
+    setCard3Data(createMockStorageData());
   };
 
   return (
@@ -962,6 +976,7 @@ export function LoaderShowcase() {
               usageLevel={card1Data.level}
               usageTrend={card1Data.trend}
               staggerAnimation={true}
+              format="currency"
             />
             <ActorsRunCard
               label="Compute Units"
@@ -970,6 +985,7 @@ export function LoaderShowcase() {
               usageLevel={card2Data.level}
               usageTrend={card2Data.trend}
               staggerAnimation={true}
+              format="decimal"
             />
             <ActorsRunCard
               label="Storage"
@@ -978,6 +994,7 @@ export function LoaderShowcase() {
               usageLevel={card3Data.level}
               usageTrend={card3Data.trend}
               staggerAnimation={true}
+              format="storage"
             />
           </div>
           <button

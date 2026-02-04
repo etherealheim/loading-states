@@ -25,6 +25,7 @@ interface ActorsRunCardProps {
   usageLevel: number;
   usageTrend?: number;
   staggerAnimation?: boolean; // Enable column-by-column fade in
+  format?: "currency" | "storage" | "decimal"; // Display format
 }
 
 function createUsagePositions(usageLevel: number, usageTrend: number): Position[] {
@@ -127,12 +128,29 @@ export function ActorsRunCard({
   usageLevel,
   usageTrend = 0,
   staggerAnimation = false,
+  format = "currency",
 }: ActorsRunCardProps) {
   const dotStates = buildStateMap(
     createUsagePositions(usageLevel, usageTrend),
     GRID_COLUMNS,
     GRID_ROWS
   );
+
+  const formatValue = (value: number): string => {
+    switch (format) {
+      case "currency":
+        return `$${value.toFixed(2)}`;
+      case "storage":
+        if (value >= 1000) {
+          return `${(value / 1000).toFixed(2)} GB`;
+        }
+        return `${value.toFixed(0)} MB`;
+      case "decimal":
+        return value.toFixed(3);
+      default:
+        return value.toString();
+    }
+  };
 
   return (
     <div className="h-[92px] w-[286px] rounded-[12px] bg-[#f4f4f5] p-[2px]">
@@ -142,7 +160,7 @@ export function ActorsRunCard({
           <p className="text-xs font-medium text-[#c9cbcf]">{usageRange}</p>
         </div>
         <p className="absolute left-3 top-9 text-[36px] font-bold leading-[44px] text-[#1f2123]">
-          ${usageAmount.toFixed(2)}
+          {formatValue(usageAmount)}
         </p>
         <div className="absolute right-3 top-[10px]">
           <DotGrid 
