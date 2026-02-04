@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import type { DotState } from "@/utils/halftone";
 import { DOT_FULL_SIZE, DOT_SPACING, LoaderDot } from "./LoaderDot";
 
@@ -6,10 +9,9 @@ interface Position {
   y: number;
 }
 
-const GRID_COLUMNS = 30;
-const GRID_ROWS = 19;
-const GRID_WIDTH = 106;
-const GRID_HEIGHT = 66;
+// Grid sizing: 21 columns x 13 rows = 105px x 65px (3px dots + 2px spacing, no scaling needed)
+const GRID_COLUMNS = 21;
+const GRID_ROWS = 13;
 
 const dotPalette = {
   full: "#1672EB",
@@ -22,6 +24,31 @@ interface ActorsRunCardProps {
   usageRange: string;
   usageLevel: number;
   usageTrend?: number;
+  animated?: boolean;
+  animationSpeed?: number; // ms per step
+}
+
+// Generate spike pattern - quick jumps simulating usage activity
+function generateSpikePattern(targetAmount: number, steps: number = 30): number[] {
+  const pattern: number[] = [0];
+  let current = 0;
+  const stepSize = targetAmount / steps;
+  
+  for (let i = 1; i <= steps; i++) {
+    // Add random spikes (20% chance)
+    if (Math.random() < 0.2) {
+      const spike = stepSize * (1 + Math.random() * 2);
+      current = Math.min(targetAmount, current + spike);
+    } else {
+      // Gradual increase
+      current = Math.min(targetAmount, current + stepSize * (0.5 + Math.random()));
+    }
+    pattern.push(current);
+  }
+  
+  // Ensure we reach the target at the end
+  pattern[pattern.length - 1] = targetAmount;
+  return pattern;
 }
 
 function createUsagePositions(usageLevel: number, usageTrend: number): Position[] {
@@ -104,9 +131,43 @@ export function ActorsRunCard({
   usageRange,
   usageLevel,
   usageTrend = 0,
+  animated = false,
+  animationSpeed = 200,
 }: ActorsRunCardProps) {
+  const [currentAmount, setCurrentAmount] = useState(animated ? 0 : usageAmount);
+  const [currentLevel, setCurrentLevel] = useState(animated ? 0 : usageLevel);
+
+  useEffect(() => {
+    if (!animated) {
+      setCurrentAmount(usageAmount);
+      setCurrentLevel(usageLevel);
+      return;
+    }
+
+    // Generate spike pattern
+    const pattern = generateSpikePattern(usageAmount, 30);
+    let step = 0;
+
+    const interval = setInterval(() => {
+      if (step >= pattern.length - 1) {
+        clearInterval(interval);
+        setCurrentAmount(usageAmount);
+        setCurrentLevel(usageLevel);
+        return;
+      }
+
+      const amount = pattern[step];
+      const level = amount / 120; // Assuming max is $120
+      setCurrentAmount(amount);
+      setCurrentLevel(level);
+      step++;
+    }, animationSpeed);
+
+    return () => clearInterval(interval);
+  }, [usageAmount, usageLevel, animated, animationSpeed]);
+
   const dotStates = buildStateMap(
-    createUsagePositions(usageLevel, usageTrend),
+    createUsagePositions(currentLevel, usageTrend),
     GRID_COLUMNS,
     GRID_ROWS
   );
@@ -118,7 +179,7 @@ export function ActorsRunCard({
           Usage <span className="text-[#c9cbcf]">{usageRange}</span>
         </p>
         <p className="absolute left-3 top-9 text-[36px] font-bold leading-[44px] text-[#1f2123]">
-          ${usageAmount.toFixed(2)}
+          ${currentAmount.toFixed(2)}
         </p>
         <div className="absolute right-3 top-[10px]">
           <DotGrid dotStates={dotStates} />
@@ -129,20 +190,14 @@ export function ActorsRunCard({
 }
 
 function DotGrid({ dotStates }: { dotStates: Map<string, DotState> }) {
-  const baseWidth = GRID_COLUMNS * DOT_FULL_SIZE + (GRID_COLUMNS - 1) * DOT_SPACING;
-  const baseHeight = GRID_ROWS * DOT_FULL_SIZE + (GRID_ROWS - 1) * DOT_SPACING;
-  const scale = Math.min(GRID_WIDTH / baseWidth, GRID_HEIGHT / baseHeight);
-
   return (
-    <div className="h-[66px] w-[106px] overflow-hidden">
+    <div className="overflow-hidden">
       <div
         className="grid"
         style={{
           gridTemplateColumns: `repeat(${GRID_COLUMNS}, auto)`,
           gridTemplateRows: `repeat(${GRID_ROWS}, auto)`,
           gap: `${DOT_SPACING}px`,
-          transform: `scale(${scale})`,
-          transformOrigin: "top left",
         }}
       >
         {Array.from({ length: GRID_ROWS }).map((_, row) =>

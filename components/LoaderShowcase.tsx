@@ -922,6 +922,7 @@ const hourglass = [
 
 export function LoaderShowcase() {
   const [speed, setSpeed] = useState(400);
+  const [cardAnimated, setCardAnimated] = useState(false);
   const [actorsRunData, setActorsRunData] = useState(() => ({
     amount: 67.67,
     range: "Jan 24 - Feb 24",
@@ -942,6 +943,8 @@ export function LoaderShowcase() {
               usageRange={actorsRunData.range}
               usageLevel={actorsRunData.level}
               usageTrend={actorsRunData.trend}
+              animated={cardAnimated}
+              animationSpeed={200}
             />
             <button
               type="button"
@@ -949,6 +952,13 @@ export function LoaderShowcase() {
               className="h-9 rounded-md border border-gray-200 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
             >
               Randomize data
+            </button>
+            <button
+              type="button"
+              onClick={() => setCardAnimated(!cardAnimated)}
+              className="h-9 rounded-md border border-gray-200 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+            >
+              {cardAnimated ? "Disable" : "Enable"} animation
             </button>
           </div>
         </div>
