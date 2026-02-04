@@ -64,10 +64,28 @@ function createUsagePositions(usageLevel: number, usageTrend: number): Position[
     return Math.round((prev + value * 1.5 + next) / 3.5);
   });
 
+  // Create positions and ensure connectivity by filling vertical gaps
   for (let column = 0; column < GRID_COLUMNS; column++) {
     const height = smoothed[column] ?? 0;
     const y = maxHeight - height;
     positions.push({ x: column, y });
+    
+    // Check if we need to fill vertical gap to connect to next column
+    if (column < GRID_COLUMNS - 1) {
+      const nextHeight = smoothed[column + 1] ?? 0;
+      const nextY = maxHeight - nextHeight;
+      const yDiff = nextY - y;
+      
+      // If vertical jump is more than 1, fill in the gap at current column
+      if (Math.abs(yDiff) > 1) {
+        const steps = Math.abs(yDiff) - 1;
+        const yDir = yDiff > 0 ? 1 : -1;
+        
+        for (let step = 1; step <= steps; step++) {
+          positions.push({ x: column, y: y + (yDir * step) });
+        }
+      }
+    }
   }
 
   return positions;
