@@ -177,7 +177,6 @@ export function applyGradientHalftones(
   direction: "outward" | "inward",
   gridSize: number
 ): Position[] {
-  const fullSet = new Set(positions.map(p => `${p.x},${p.y}`));
   const centroid = getCentroid(positions);
   const midPositions: Position[] = [];
 

@@ -1,11 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useEffect, useState, useRef, useMemo, memo } from "react";
 import { Slider } from "./ui/slider";
+import { ActorsRunCard } from "./ActorsRunCard";
 import { generateHalftoneStates, HalftoneStrategy, type Position as HalftonePosition, type DotState as HalftoneDotState } from "@/utils/halftone";
+import { DOT_SPACING, LoaderDot } from "./LoaderDot";
 
-type DotState = "full" | "mid" | "empty";
+type DotState = HalftoneDotState;
 
 interface Position {
   x: number;
@@ -17,8 +18,6 @@ interface GridDot {
 }
 
 const GRID_SIZE = 5;
-const DOT_SPACING = 2;
-
 interface LoaderProps {
   shape: Position[];
   title: string;
@@ -30,6 +29,26 @@ interface LoaderProps {
     strategy: HalftoneStrategy;
     enabled?: boolean; // Default true if halftone provided
   };
+}
+
+const ACTORS_RUN_RANGES = [
+  "Jan 24 - Feb 24",
+  "Feb 24 - Mar 24",
+  "Mar 24 - Apr 24",
+  "Apr 24 - May 24",
+  "May 24 - Jun 24",
+];
+
+function createMockActorsRunData() {
+  const amount = Math.round(Math.random() * 12000) / 100;
+  const range = ACTORS_RUN_RANGES[Math.floor(Math.random() * ACTORS_RUN_RANGES.length)];
+  const level = Math.min(1, Math.max(0, amount / 120));
+  let trend = Math.random() * 2 - 1;
+  if (level < 0.35) {
+    trend -= (0.35 - level) * 1.5;
+  }
+  trend = Math.max(-1, Math.min(1, trend));
+  return { amount, range, level, trend };
 }
 
 const Loader = memo(function Loader({ shape, title, animated = false, animationPath, speed = 400, customStates, halftone }: LoaderProps) {
@@ -162,57 +181,11 @@ const Loader = memo(function Loader({ shape, title, animated = false, animationP
       >
         {grid.map((row, y) =>
           row.map((dot, x) => (
-            <Dot key={`${x}-${y}`} state={dot.state} />
+            <LoaderDot key={`${x}-${y}`} state={dot.state} />
           ))
         )}
       </div>
       <div className="text-xs text-gray-600 font-medium">{title}</div>
-    </div>
-  );
-});
-
-const Dot = memo(function Dot({ state }: { state: DotState }) {
-  const getStyles = () => {
-    switch (state) {
-      case "full":
-        return {
-          width: 3,
-          height: 3,
-          backgroundColor: "#1F2123",
-          border: "none",
-        };
-      case "mid":
-        return {
-          width: 3,
-          height: 3,
-          backgroundColor: "#D2D3D6",
-          border: "none",
-        };
-      case "empty":
-        return {
-          width: 1.5,
-          height: 1.5,
-          backgroundColor: "#D2D3D6",
-          border: "none",
-        };
-    }
-  };
-
-  const styles = getStyles();
-
-  return (
-    <div className="flex items-center justify-center" style={{ width: 3, height: 3 }}>
-      <motion.div
-        animate={{
-          width: styles.width,
-          height: styles.height,
-          backgroundColor: styles.backgroundColor,
-          border: styles.border,
-        }}
-        transition={{
-          duration: 0,
-        }}
-      />
     </div>
   );
 });
@@ -949,11 +922,36 @@ const hourglass = [
 
 export function LoaderShowcase() {
   const [speed, setSpeed] = useState(400);
+  const [actorsRunData, setActorsRunData] = useState(() => ({
+    amount: 67.67,
+    range: "Jan 24 - Feb 24",
+    level: 0.56,
+    trend: 0,
+  }));
 
   return (
     <div className="min-h-screen bg-white p-12">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-4 text-gray-900">Loading States</h1>
+
+        <div className="mb-12">
+          <h2 className="text-xl font-semibold mb-6 text-gray-700">Dashboard Card</h2>
+          <div className="flex flex-wrap items-center gap-4">
+            <ActorsRunCard
+              usageAmount={actorsRunData.amount}
+              usageRange={actorsRunData.range}
+              usageLevel={actorsRunData.level}
+              usageTrend={actorsRunData.trend}
+            />
+            <button
+              type="button"
+              onClick={() => setActorsRunData(createMockActorsRunData())}
+              className="h-9 rounded-md border border-gray-200 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+            >
+              Randomize data
+            </button>
+          </div>
+        </div>
 
         <div className="mb-12 max-w-md">
           <div className="flex items-center gap-4">
