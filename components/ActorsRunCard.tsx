@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import type { DotState } from "@/utils/halftone";
 import { DOT_FULL_SIZE, DOT_SPACING, LoaderDot } from "./LoaderDot";
 
@@ -202,25 +201,27 @@ function DotGrid({ dotStates, staggerAnimation }: { dotStates: Map<string, DotSt
         }}
       >
         {Array.from({ length: GRID_COLUMNS }).map((_, column) => (
-          <motion.div
+          <div
             key={column}
             className="flex flex-col"
             style={{
               gap: `${DOT_SPACING}px`,
             }}
-            initial={staggerAnimation ? { opacity: 0 } : { opacity: 1 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              duration: 0,
-              delay: staggerAnimation ? column * 0.06 : 0,
-            }}
           >
             {Array.from({ length: GRID_ROWS }).map((_, row) => {
               const key = `${column},${row}`;
               const state = dotStates.get(key) ?? "empty";
-              return <LoaderDot key={key} state={state} palette={dotPalette} />;
+              const staggerDelay = staggerAnimation ? column * 0.06 : 0;
+              return (
+                <LoaderDot 
+                  key={key} 
+                  state={state} 
+                  palette={dotPalette}
+                  staggerDelay={staggerDelay}
+                />
+              );
             })}
-          </motion.div>
+          </div>
         ))}
       </div>
     </div>

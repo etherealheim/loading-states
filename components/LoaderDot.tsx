@@ -20,9 +20,10 @@ interface LoaderDotProps {
     mid: string;
     empty: string;
   };
+  staggerDelay?: number; // Delay in seconds for stagger animation
 }
 
-export function LoaderDot({ state, palette = DEFAULT_PALETTE }: LoaderDotProps) {
+export function LoaderDot({ state, palette = DEFAULT_PALETTE, staggerDelay = 0 }: LoaderDotProps) {
   const getStyles = () => {
     switch (state) {
       case "full":
@@ -47,6 +48,9 @@ export function LoaderDot({ state, palette = DEFAULT_PALETTE }: LoaderDotProps) 
   };
 
   const styles = getStyles();
+  
+  // Only stagger full and mid states, empty appears instantly
+  const shouldStagger = staggerDelay > 0 && (state === "full" || state === "mid");
 
   return (
     <div
@@ -54,13 +58,16 @@ export function LoaderDot({ state, palette = DEFAULT_PALETTE }: LoaderDotProps) 
       style={{ width: DOT_FULL_SIZE, height: DOT_FULL_SIZE }}
     >
       <motion.div
+        initial={shouldStagger ? { opacity: 0, width: styles.width, height: styles.height, backgroundColor: styles.backgroundColor } : undefined}
         animate={{
+          opacity: 1,
           width: styles.width,
           height: styles.height,
           backgroundColor: styles.backgroundColor,
         }}
         transition={{
           duration: 0,
+          delay: shouldStagger ? staggerDelay : 0,
         }}
       />
     </div>
