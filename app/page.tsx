@@ -1,5 +1,5 @@
-import { LoaderShowcase } from "@/components/LoaderShowcase";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <LoaderShowcase />;
+  redirect("/actors");
 }
