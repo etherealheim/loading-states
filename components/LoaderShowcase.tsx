@@ -32,22 +32,48 @@ interface LoaderProps {
 }
 
 const ACTORS_RUN_RANGES = [
-  "Jan 24 - Feb 24",
-  "Feb 24 - Mar 24",
-  "Mar 24 - Apr 24",
-  "Apr 24 - May 24",
-  "May 24 - Jun 24",
+  "Jan 1 - Jan 31",
+  "Feb 1 - Feb 28",
+  "Mar 1 - Mar 31",
+  "Apr 1 - Apr 30",
+  "May 1 - May 31",
+  "Jun 1 - Jun 15", // Mid-month example
+  "Jul 15 - Jul 31", // Mid-month example
+];
+
+// Edge case scenarios for realistic usage patterns
+const USAGE_EDGE_CASES = [
+  { min: 0, max: 0, label: "No usage" },           // $0.00
+  { min: 0.01, max: 5, label: "Very low" },        // $0.01-$5.00
+  { min: 5, max: 15, label: "Low-mid" },           // $5.00-$15.00
+  { min: 15, max: 25, label: "Mid-range" },        // $15.00-$25.00
+  { min: 25, max: 30, label: "High" },             // $25.00-$30.00
+  { min: 30, max: 60, label: "Very high" },        // $30.00-$60.00
+  { min: 60, max: 120, label: "Maximum" },         // $60.00-$120.00
 ];
 
 function createMockActorsRunData() {
-  const amount = Math.round(Math.random() * 12000) / 100;
+  // Randomly select an edge case or use fully random
+  const useEdgeCase = Math.random() < 0.7; // 70% chance of using edge case
+  let amount: number;
+
+  if (useEdgeCase) {
+    const edgeCase = USAGE_EDGE_CASES[Math.floor(Math.random() * USAGE_EDGE_CASES.length)];
+    amount = edgeCase.min + Math.random() * (edgeCase.max - edgeCase.min);
+    amount = Math.round(amount * 100) / 100;
+  } else {
+    amount = Math.round(Math.random() * 12000) / 100;
+  }
+
   const range = ACTORS_RUN_RANGES[Math.floor(Math.random() * ACTORS_RUN_RANGES.length)];
   const level = Math.min(1, Math.max(0, amount / 120));
+  
   let trend = Math.random() * 2 - 1;
   if (level < 0.35) {
     trend -= (0.35 - level) * 1.5;
   }
   trend = Math.max(-1, Math.min(1, trend));
+  
   return { amount, range, level, trend };
 }
 
