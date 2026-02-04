@@ -135,9 +135,10 @@ export function ActorsRunCard({
   return (
     <div className="h-[92px] w-[286px] rounded-[12px] bg-[#f4f4f5] p-[2px]">
       <div className="relative h-full w-full rounded-[11px] bg-white">
-        <p className="absolute left-3 top-2 text-xs font-medium text-[#6d7178]">
-          Usage <span className="text-[#c9cbcf]">{usageRange}</span>
-        </p>
+        <div className="absolute left-3 top-2">
+          <p className="text-xs font-medium text-[#6d7178]">Usage</p>
+          <p className="text-xs font-medium text-[#c9cbcf]">{usageRange}</p>
+        </div>
         <p className="absolute left-3 top-9 text-[36px] font-bold leading-[44px] text-[#1f2123]">
           ${usageAmount.toFixed(2)}
         </p>
