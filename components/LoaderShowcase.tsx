@@ -923,7 +923,7 @@ const hourglass = [
 export function LoaderShowcase() {
   const [speed, setSpeed] = useState(400);
   const [cardAnimated, setCardAnimated] = useState(false);
-  const [cardStagger, setCardStagger] = useState(false);
+  const [cardStagger, setCardStagger] = useState(true);
   const [actorsRunData, setActorsRunData] = useState(() => ({
     amount: 67.67,
     range: "Jan 24 - Feb 24",
