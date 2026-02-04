@@ -19,6 +19,7 @@ const dotPalette = {
 };
 
 interface ActorsRunCardProps {
+  label: string;
   usageAmount: number;
   usageRange: string;
   usageLevel: number;
@@ -120,6 +121,7 @@ function buildStateMap(positions: Position[], columns: number, rows: number) {
 }
 
 export function ActorsRunCard({
+  label,
   usageAmount,
   usageRange,
   usageLevel,
@@ -136,7 +138,7 @@ export function ActorsRunCard({
     <div className="h-[92px] w-[286px] rounded-[12px] bg-[#f4f4f5] p-[2px]">
       <div className="relative h-full w-full rounded-[11px] bg-white">
         <div className="absolute left-3 top-2">
-          <p className="text-xs font-medium text-[#6d7178]">Usage</p>
+          <p className="text-xs font-medium text-[#6d7178]">{label}</p>
           <p className="text-xs font-medium text-[#c9cbcf]">{usageRange}</p>
         </div>
         <p className="absolute left-3 top-9 text-[36px] font-bold leading-[44px] text-[#1f2123]">

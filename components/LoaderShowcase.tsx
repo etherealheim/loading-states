@@ -922,12 +922,30 @@ const hourglass = [
 
 export function LoaderShowcase() {
   const [speed, setSpeed] = useState(400);
-  const [actorsRunData, setActorsRunData] = useState(() => ({
+  const [card1Data, setCard1Data] = useState(() => ({
     amount: 67.67,
     range: "Jan 24 - Feb 24",
     level: 0.56,
     trend: 0,
   }));
+  const [card2Data, setCard2Data] = useState(() => ({
+    amount: 1234.56,
+    range: "Jan 24 - Feb 24",
+    level: 0.72,
+    trend: 0.3,
+  }));
+  const [card3Data, setCard3Data] = useState(() => ({
+    amount: 89.23,
+    range: "Jan 24 - Feb 24",
+    level: 0.41,
+    trend: -0.2,
+  }));
+
+  const handleRandomizeAll = () => {
+    setCard1Data(createMockActorsRunData());
+    setCard2Data(createMockActorsRunData());
+    setCard3Data(createMockActorsRunData());
+  };
 
   return (
     <div className="min-h-screen bg-white p-12">
@@ -935,23 +953,40 @@ export function LoaderShowcase() {
         <h1 className="text-3xl font-bold mb-4 text-gray-900">Loading States</h1>
 
         <div className="mb-12">
-          <h2 className="text-xl font-semibold mb-6 text-gray-700">Dashboard Card</h2>
-          <div className="flex flex-wrap items-center gap-4">
+          <h2 className="text-xl font-semibold mb-6 text-gray-700">Dashboard Cards</h2>
+          <div className="flex flex-wrap items-start gap-4">
             <ActorsRunCard
-              usageAmount={actorsRunData.amount}
-              usageRange={actorsRunData.range}
-              usageLevel={actorsRunData.level}
-              usageTrend={actorsRunData.trend}
+              label="Usage"
+              usageAmount={card1Data.amount}
+              usageRange={card1Data.range}
+              usageLevel={card1Data.level}
+              usageTrend={card1Data.trend}
               staggerAnimation={true}
             />
-            <button
-              type="button"
-              onClick={() => setActorsRunData(createMockActorsRunData())}
-              className="h-9 rounded-md border border-gray-200 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-            >
-              Randomize data
-            </button>
+            <ActorsRunCard
+              label="Compute Units"
+              usageAmount={card2Data.amount}
+              usageRange={card2Data.range}
+              usageLevel={card2Data.level}
+              usageTrend={card2Data.trend}
+              staggerAnimation={true}
+            />
+            <ActorsRunCard
+              label="Storage"
+              usageAmount={card3Data.amount}
+              usageRange={card3Data.range}
+              usageLevel={card3Data.level}
+              usageTrend={card3Data.trend}
+              staggerAnimation={true}
+            />
           </div>
+          <button
+            type="button"
+            onClick={handleRandomizeAll}
+            className="mt-4 h-9 rounded-md border border-gray-200 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+          >
+            Randomize all data
+          </button>
         </div>
 
         <div className="mb-12 max-w-md">
