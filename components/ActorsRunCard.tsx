@@ -184,7 +184,11 @@ export function ActorsRunCard({
           ${currentAmount.toFixed(2)}
         </p>
         <div className="absolute right-3 top-[10px]">
-          <DotGrid dotStates={dotStates} staggerAnimation={staggerAnimation} />
+          <DotGrid 
+            key={`${usageAmount}-${usageLevel}-${usageTrend}`}
+            dotStates={dotStates} 
+            staggerAnimation={staggerAnimation} 
+          />
         </div>
       </div>
     </div>
