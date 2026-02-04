@@ -31,7 +31,7 @@ function createUsagePositions(usageLevel: number, usageTrend: number): Position[
   const heights: number[] = [];
   const maxHeight = GRID_ROWS - 1;
   const baseHeights = Array.from({ length: GRID_COLUMNS }, (_, column) => {
-    const t = GRID_COLUMNS === 1 ? 1 : column / (GRID_COLUMNS - 1);
+    const t = column / (GRID_COLUMNS - 1);
     const curve = t * t;
     const amplitude = clamped * (0.2 + 0.8 * curve);
     const trendOffset = trend * Math.pow(t, 1.4) * maxHeight * 0.9;
