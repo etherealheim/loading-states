@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import type { DotState } from "@/utils/halftone";
 
 export const DOT_FULL_SIZE = 3;
-export const DOT_MID_SIZE = 2;
+export const DOT_MID_SIZE = 2.5;
 export const DOT_EMPTY_SIZE = 1.5;
 export const DOT_SPACING = 2;
 
