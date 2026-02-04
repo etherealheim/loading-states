@@ -44,7 +44,7 @@ function createUsagePositions(usageLevel: number, usageTrend: number): Position[
     return Math.round(amplitude * maxHeight + trendOffset - tailDrop);
   });
 
-  const jitter = Math.max(1, Math.round(clamped * 2));
+  const jitter = Math.max(2, Math.round(clamped * 4));
   let current = baseHeights[0] ?? 0;
 
   for (let column = 0; column < GRID_COLUMNS; column++) {
@@ -53,7 +53,7 @@ function createUsagePositions(usageLevel: number, usageTrend: number): Position[
       maxHeight,
       Math.max(0, baseHeights[column] + delta)
     );
-    const ease = 0.45;
+    const ease = 0.6;
     current = Math.round(current * (1 - ease) + target * ease);
     heights.push(current);
   }
@@ -61,7 +61,7 @@ function createUsagePositions(usageLevel: number, usageTrend: number): Position[
   const smoothed = heights.map((value, index) => {
     const prev = heights[Math.max(0, index - 1)];
     const next = heights[Math.min(heights.length - 1, index + 1)];
-    return Math.round((prev + value * 2 + next) / 4);
+    return Math.round((prev + value * 1.5 + next) / 3.5);
   });
 
   for (let column = 0; column < GRID_COLUMNS; column++) {
