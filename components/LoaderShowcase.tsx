@@ -110,7 +110,9 @@ const Loader = memo(function Loader({ shape, title, animated = false, animationP
         // Limit cache size to prevent memory leaks
         if (halftoneCache.current.size > 100) {
           const firstKey = halftoneCache.current.keys().next().value;
-          halftoneCache.current.delete(firstKey);
+          if (firstKey) {
+            halftoneCache.current.delete(firstKey);
+          }
         }
       }
     }
