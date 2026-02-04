@@ -8,9 +8,9 @@ interface Position {
   y: number;
 }
 
-// Grid sizing: 21 columns x 13 rows = 105px x 65px (3px dots + 2px spacing, no scaling needed)
-const GRID_COLUMNS = 21;
-const GRID_ROWS = 13;
+// Grid sizing: 23 columns x 14 rows = 113px x 68px (3px dots + 2px spacing, no scaling needed)
+const GRID_COLUMNS = 23;
+const GRID_ROWS = 14;
 
 const dotPalette = {
   full: "#1672EB",
